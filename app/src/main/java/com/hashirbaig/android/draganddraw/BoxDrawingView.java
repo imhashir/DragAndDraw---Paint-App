@@ -63,6 +63,11 @@ public class BoxDrawingView extends View{
                 if(mBox != null) {
                     mBox.setCurrentPosition(point);
                     invalidate();
+
+                    if(event.getPointerCount() == 2) {
+                        mBox.setAngle((Math.atan((event.getY(1) - event.getY(0)) /
+                                (event.getX(1) - event.getX(0))) * 360 / (2 * Math.PI)));
+                    }
                 }
                 break;
             case MotionEvent.ACTION_CANCEL:
@@ -89,7 +94,10 @@ public class BoxDrawingView extends View{
             float top = Math.min(box.getOrigin().y, box.getCurrentPosition().y);
             float bottom = Math.max(box.getOrigin().y, box.getCurrentPosition().y);
 
+            canvas.save();
+            canvas.rotate(box.getAngle(), box.getCentreX(), box.getCentreY());
             canvas.drawRect(left, top, right, bottom, mBoxPaint);
+            canvas.restore();
         }
 
     }
