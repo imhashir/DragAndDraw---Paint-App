@@ -5,6 +5,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -16,7 +19,10 @@ import java.util.List;
 public class BoxDrawingView extends View{
 
     private static final String TAG = "BoxDrawingView";
-    private List<Box> mBoxes = new ArrayList<>();
+    private static final String KEY_ARRAY_LIST = "KEY_ARRAY_LIST_MINE";
+    private static final String KEY_DEF_CONS = "KEY_DEF_CONST_MINE";
+
+    private ArrayList<Box> mBoxes = new ArrayList<>();
     private Box mBox;
     private Paint mBoxPaint;
     private Paint mBackgroundPaint;
@@ -88,5 +94,19 @@ public class BoxDrawingView extends View{
 
     }
 
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(KEY_DEF_CONS, super.onSaveInstanceState());
+        bundle.putSerializable(KEY_ARRAY_LIST, mBoxes);
+        return bundle;
+    }
 
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        Bundle bundle = (Bundle) state;
+        if(state instanceof Bundle)
+            mBoxes = (ArrayList<Box>) bundle.getSerializable(KEY_ARRAY_LIST);
+        super.onRestoreInstanceState(bundle.getParcelable(KEY_DEF_CONS));
+    }
 }
